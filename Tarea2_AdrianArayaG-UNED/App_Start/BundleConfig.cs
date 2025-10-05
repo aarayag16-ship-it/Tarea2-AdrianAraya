@@ -25,6 +25,17 @@ namespace Tarea2_AdrianArayaG_UNED
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/app").Include(
+    "~/Scripts/app/state.js",
+    "~/Scripts/app/tasks.js",
+    "~/Scripts/app/ratings.js"
+));
+
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                "~/Content/site.css"
+            ));
+
         }
     }
 }
