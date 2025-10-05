@@ -1,7 +1,44 @@
-﻿
+﻿@model Tarea2_AdrianArayaG_UNED.Domain.TaskItem
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = Model.Title;
 }
+<article>
+    <h2>@Html.Encode(Model.Title)</h2>
+    <div class="meta">Autor: @Html.Encode(Model.AuthorUserName) · Promedio: <span id="avg">@Model.AverageScore.ToString("0.00")</span> (@Model.Ratings.Count)</div>
+    <p>@Html.Encode(Model.Description)</p>
+    @if (!string.IsNullOrEmpty(Model.RepoUrl))
+    {
+        <p>Repo: <a href="@Model.RepoUrl" rel="noopener" target="_blank">@Model.RepoUrl</a></p>
+    }
+    @if (!string.IsNullOrEmpty(Model.AttachmentFileName))
+    {
+        <p>Adjunto: @Model.AttachmentFileName</p>
+    }
+    <p><b>Categoría:</b> @Model.Category · <b>Lenguajes:</b> @string.Join(", ", Model.Languages)</p>
 
-<h2>Details</h2>
 
+    @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.AuthorUserName)
+    {
+        <form id="delForm" method="post" action="@Url.Action("Delete","Tasks", new { id = Model.Id })">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="danger">Eliminar</button>
+            <a class="button" href="@Url.Action("Edit","Tasks", new { id = Model.Id })">Editar</a>
+        </form>
+    }
+</article>
+<section>
+    <h3>Calificaciones y comentarios</h3>
+    @Html.Partial("~/Views/Ratings/_RatingList.cshtml", Model)
+    @if (User.Identity.IsAuthenticated)
+    {
+        @Html.Partial("~/Views/Ratings/_RatingForm.cshtml", new Tarea2_AdrianArayaG_UNED.ViewModels.RatingCreateVm { TaskId = Model.Id.ToString() })
+    }
+    else
+    {
+        <p><a href="@Url.Action("Login","Account", new { returnUrl = Request.RawUrl })">Inicia sesión para calificar</a></p>
+    }
+</section>
+@section scripts{
+    <script>Recent.add("@Model.Id","@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.Title))"); Ratings.bind("@Model.Id"); Tasks.bindDeleteAjax();</script>
+}

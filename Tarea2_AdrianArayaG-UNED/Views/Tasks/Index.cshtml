@@ -1,7 +1,39 @@
-﻿
+﻿@model Tarea2_AdrianArayaG_UNED.ViewModels.TaskListVm
+
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Tareas";
 }
-
-<h2>Index</h2>
-
+<section class="filters">
+    @using (Html.BeginForm("ListFiltered", "Tasks", FormMethod.Post, new { id = "filterForm" }))
+    {
+        <input type="text" name="Query" placeholder="Buscar..." value="@Model.Filter?.Query" />
+        <select name="Category">
+            <option value="">Todas</option>
+            @foreach (var c in Enum.GetValues(typeof(Tarea2_AdrianArayaG_UNED.Domain.TaskCategory)))
+            {
+                var sel = Model.Filter?.Category == (Tarea2_AdrianArayaG_UNED.Domain.TaskCategory)c ? "selected" : "";
+                <option value="@c" @sel>@c</option>
+            }
+        </select>
+        <input type="text" name="Languages" placeholder="Lenguajes (coma)" value="@(Model.Filter?.Languages==null?"":string.Join(",",Model.Filter.Languages))" />
+        <select name="SortBy">
+            <option value="date" @(Model.Filter?.SortBy == "date" ? "selected" : "")>Recientes</option>
+            <option value="avg" @(Model.Filter?.SortBy == "avg" ? "selected" : "")>Mejor puntuación</option>
+            <option value="title" @(Model.Filter?.SortBy == "title" ? "selected" : "")>Título</option>
+        </select>
+        <button type="submit">Aplicar</button>
+    }
+</section>
+<section>
+    <h3>Resultados</h3>
+    <div id="taskList">
+        @Html.Partial("~/Views/Shared/_TaskCard.cshtml", Model.Items)
+    </div>
+</section>
+<aside>
+    <h3>Vistos recientemente</h3>
+    <ul id="recentList"></ul>
+</aside>
+@section scripts{
+    <script>AppState.initFilters(); Recent.init(); Tasks.bindFilterAjax();</script>
+}

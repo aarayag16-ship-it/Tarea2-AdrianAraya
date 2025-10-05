@@ -1,7 +1,22 @@
-﻿
-@{
-    ViewBag.Title = "Login";
+﻿@{
+    ViewBag.Title = "Ingresar";
+}
+<h2>Ingresar</h2>
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <input name="userName" placeholder="Usuario" required />
+    <input name="password" type="password" placeholder="Contraseña" required />
+
+    @* Si llegaste con ReturnUrl, envíalo *@
+    if (!string.IsNullOrEmpty(ViewBag.ReturnUrl as string))
+    {
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+    }
+
+    <button type="submit">Entrar</button>
+    @Html.ValidationSummary()
 }
 
-<h2>Login</h2>
-
+<p>¿No tienes cuenta? <a href="@Url.Action("Register","Account")">Registrarse</a></p>

@@ -1,7 +1,42 @@
-﻿
+﻿@model Tarea2_AdrianArayaG_UNED.ViewModels.TaskCreateVm
+
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Nueva Tarea";
 }
-
-<h2>Create</h2>
-
+<h2>Nueva Tarea</h2>
+@using (Html.BeginForm("Create", "Tasks", FormMethod.Post, new { id = "createForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.LabelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title, new { @class = "req", placeholder = "Título" })
+        @Html.ValidationMessageFor(m => m.Title)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        @Html.TextAreaFor(m => m.Description, new { rows = 5, @class = "req" })
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+    <div>
+        <label>Lenguajes (separa por coma)</label>
+        <input type="text" id="langs" />
+    </div>
+    <div>
+        @Html.LabelFor(m => m.RepoUrl)
+        @Html.TextBoxFor(m => m.RepoUrl, new { placeholder = "https://github.com/..." })
+        @Html.ValidationMessageFor(m => m.RepoUrl)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Category)
+        @Html.DropDownListFor(m => m.Category, new SelectList(Enum.GetValues(typeof(Tarea2_AdrianArayaG_UNED.Domain.TaskCategory))), "Seleccione")
+    </div>
+    <div>
+        <label>Adjunto (opcional)</label>
+        <input type="file" name="attachment" />
+    </div>
+    <button type="submit">Guardar</button>
+}
+@section scripts{
+    @Html.Partial("~/Views/Shared/_ValidationScriptsPartial.cshtml")
+    <script>Tasks.initCreate();</script>
+}

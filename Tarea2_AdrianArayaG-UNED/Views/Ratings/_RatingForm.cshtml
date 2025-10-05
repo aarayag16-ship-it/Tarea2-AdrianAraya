@@ -1,7 +1,14 @@
-﻿
-@{
-    ViewBag.Title = "_RatingForm";
+﻿@model Tarea2_AdrianArayaG_UNED.ViewModels.RatingCreateVm
+
+@using (Html.BeginForm("Create", "Ratings", FormMethod.Post, new { id = "rateForm" }))
+
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.TaskId)
+    <label>Puntuación (1-5)</label>
+    <input type="number" name="Score" min="1" max="5" required />
+    <label>Comentario</label>
+<textarea name="Comment" rows="3" maxlength="800" required></textarea>
+    <button type="submit">Enviar</button>
+
 }
-
-<h2>_RatingForm</h2>
-

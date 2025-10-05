@@ -1,7 +1,17 @@
-﻿
-@{
-    ViewBag.Title = "_TaskCard";
+﻿@model IEnumerable<Tarea2_AdrianArayaG_UNED.Domain.TaskItem>
+
+@foreach (var t in Model)
+
+{
+    <article class="card">
+        <header>
+            <h4><a href="@Url.Action("Details","Tasks", new { id = t.Id })">@Html.Encode(t.Title)</a></h4>
+            <div class="meta">Autor: @Html.Encode(t.AuthorUserName) · Promedio: @t.AverageScore.ToString("0.00")</div>
+        </header>
+        <p>@Html.Encode(t.Description)</p>
+        <footer>
+            <span>@string.Join(", ", t.Languages)</span>
+            <span class="badge">@t.Category</span>
+        </footer>
+    </article>
 }
-
-<h2>_TaskCard</h2>
-

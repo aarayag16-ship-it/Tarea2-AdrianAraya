@@ -1,7 +1,13 @@
-﻿
-@{
-    ViewBag.Title = "_RatingList";
-}
+﻿@model Tarea2_AdrianArayaG_UNED.Domain.TaskItem
 
-<h2>_RatingList</h2>
+<ul id="ratingList">
 
+    @foreach (var r in Model.Ratings.OrderByDescending(x => x.CreatedAt))
+
+    {
+        <li>
+            <b>@r.Score ★</b> — @Html.Encode(r.Comment)
+            <div class="meta">por @Html.Encode(r.UserName) · @r.CreatedAt.ToLocalTime()</div>
+        </li>
+    }
+</ul>

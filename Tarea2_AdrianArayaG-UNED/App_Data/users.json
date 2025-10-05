@@ -1,1 +1,12 @@
-﻿[]
+[
+  {
+    "UserName": "aaraya",
+    "DisplayName": "Adrian",
+    "PasswordHash": "uPL9rayu8Lnozm/W7IPMotk2OsimeGoITMnSRUkQN1k=",
+    "Salt": "/wdedhdxfCzmbqJ5woe+Yg==",
+    "Roles": [
+      "Estudiante"
+    ],
+    "CreatedAt": "2025-10-05T14:32:45.6230665Z"
+  }
+]

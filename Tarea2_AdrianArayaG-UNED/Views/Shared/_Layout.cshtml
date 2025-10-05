@@ -2,25 +2,22 @@
     Layout = null;
     var isAuth = Context.User?.Identity?.IsAuthenticated ?? false;
 }
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@(string.IsNullOrEmpty(ViewBag.Title) ? "RottenTasks" : (ViewBag.Title + " - RottenTasks"))</title>
-
+    <title>RottenTasks</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <!-- NAVBAR -->
     <nav class="navbar">
         <a class="brand" href="@Url.Action("Index","Tasks")">RottenTasks</a>
         <div class="nav-right">
             @if (isAuth)
             {
-                <span class="hello">Hola, @User.Identity.Name</span>
+                <span>@User.Identity.Name</span>
                 <a href="@Url.Action("Create","Tasks")">Nueva Tarea</a>
                 <a href="@Url.Action("Logout","Account")">Salir</a>
             }
@@ -31,23 +28,14 @@
             }
         </div>
     </nav>
-
-    <!-- CONTENIDO -->
     <main class="container">
         @RenderBody()
     </main>
-
-    <!-- TOAST (notificaciones flotantes) -->
     <div id="toast" class="toast" style="display:none"></div>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-
-    @* Renderiza Bootstrap sólo si lo agregaste en BundleConfig *@
     @Scripts.Render("~/bundles/bootstrap")
-
     @Scripts.Render("~/bundles/app")
     @RenderSection("scripts", required: false)
 </body>
 </html>
-
