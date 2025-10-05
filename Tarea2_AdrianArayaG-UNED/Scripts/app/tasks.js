@@ -51,10 +51,31 @@ function initCreate() {
             toast('Completa los campos obligatorios'); return;
         }
         // Mapear lenguajes al post
-        $('<input>').attr({ type: 'hidden', name: 'Languages[0]' }).val('dummy').appendTo(form); // evita null binding
-        const langs = ($('#langs').val() || '').split(',').map(s => s.trim()).filter(Boolean);
-        $(form).find('input[name^="Languages"]').remove();
-        langs.forEach((l, i) => $('<input>').attr({ type: 'hidden', name: `Languages[${i}]` }).val(l).appendTo(form));
+        $(form).find('input[name="Languages"]').remove(); // limpia previos
+        const langs = ($('#langs').val() || '')
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+        //const langs = ($('#langs').val() || '').split(',').map(s => s.trim()).filter(Boolean);
+
+        //langs.forEach((l, i) => $('<input>').attr({ type: 'hidden', name: `Languages[${i}]` }).val(l).appendTo(form));
+        langs.forEach(l => $('<input>').attr({ type: 'hidden', name: 'Languages' }).val(l).appendTo(form));
+
+
+        // Normaliza lenguajes ANTES de crear el FormData
+        const langs = ($('#langs').val() || '')
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+
+        
+
+        
+
+        // 3) Plan B (fallback): también rellena el CSV oculto
+        $('#LanguagesCsv').val(langs.join(','));
+
+      ;
 
 
         const fd = new FormData(form);
@@ -70,10 +91,19 @@ function initEdit() {
     $('#editForm').on('submit', function (e) {
         e.preventDefault();
         const form = this;
-        const langs = ($('#langs').val() || '').split(',').map(s => s.trim()).filter(Boolean);
-        $(form).find('input[name^="Languages"]').remove();
-        langs.forEach((l, i) => $('<input>').attr({ type: 'hidden', name: `Languages[${i}]` }).val(l).appendTo(form));
-        $.ajax({ url: form.action, method: 'POST', data: $(form).serialize() + `&__RequestVerificationToken=${antif()}` })
+
+        $(form).find('input[name="Languages"]').remove();
+        const langs = ($('#langs').val() || '')
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+        langs.forEach(l => $('<input>').attr({ type: 'hidden', name: 'Languages' }).val(l).appendTo(form));
+
+        $.ajax({
+            url: form.action,
+            method: 'POST',
+            data: $(form).serialize() + `&__RequestVerificationToken=${$('input[name=__RequestVerificationToken]').val()}`
+        })
             .done(res => { if (res.ok) window.location = res.redirect; else toast('Error al guardar'); })
             .fail(() => toast('Fallo al guardar'));
     });

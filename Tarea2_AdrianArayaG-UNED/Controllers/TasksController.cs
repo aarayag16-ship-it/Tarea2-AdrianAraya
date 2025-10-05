@@ -41,7 +41,52 @@ namespace Tarea2_AdrianArayaG_UNED.Controllers
         [Authorize, ValidateAntiForgeryToken, HttpPost]
         public ActionResult Create(TaskCreateVm vm, HttpPostedFileBase attachment)
         {
-            if (!ModelState.IsValid) return Json(new { ok = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+            // ========= PARCHE ROBUSTO: Normalizar Languages =========
+            // Si el model binder no pobló Languages, intenta recuperarlo del form.
+            if (vm.Languages == null || !vm.Languages.Any())
+            {
+                // Plan A: múltiples entradas con el mismo nombre "Languages"
+                var langsMulti = Request.Form.GetValues("Languages");
+                if (langsMulti != null && langsMulti.Length > 0)
+                {
+                    vm.Languages = langsMulti
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                        .Select(s => s.Trim())
+                        .ToList();
+                }
+
+                // Plan B (fallback): una sola cadena CSV
+                if (vm.Languages == null || !vm.Languages.Any())
+                {
+                    var csv = Request.Form["LanguagesCsv"]
+                              ?? Request.Form["Languages"]
+                              ?? Request.Form["langs"]; // por si usaste ese id en el input visible
+                    if (!string.IsNullOrWhiteSpace(csv))
+                    {
+                        vm.Languages = csv.Split(',')
+                            .Select(s => s.Trim())
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .ToList();
+                    }
+                }
+
+                // Si logramos poblar Languages, elimina el error previo y revalida el modelo
+                if (vm.Languages != null && vm.Languages.Any())
+                {
+                    ModelState.Remove("Languages");
+                    TryValidateModel(vm);
+                }
+            }
+            // ========= FIN PARCHE =========
+
+            if (!ModelState.IsValid)
+            {
+                var errs = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => string.IsNullOrWhiteSpace(e.ErrorMessage) ? e.Exception?.Message : e.ErrorMessage);
+                return Json(new { ok = false, errors = errs });
+            }
+
             var t = new TaskItem
             {
                 Title = vm.Title,
@@ -51,14 +96,16 @@ namespace Tarea2_AdrianArayaG_UNED.Controllers
                 Category = vm.Category,
                 AuthorUserName = User.Identity.Name
             };
+
             if (attachment != null && attachment.ContentLength > 0)
             {
-                var fileName = $"{t.Id}_{System.IO.Path.GetFileName(attachment.FileName)}";
+                var fileName = string.Format("{0}_{1}", t.Id, System.IO.Path.GetFileName(attachment.FileName));
                 var savePath = Server.MapPath("~/App_Data/Uploads/" + fileName);
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(savePath));
                 attachment.SaveAs(savePath);
                 t.AttachmentFileName = fileName;
             }
+
             _repo.Add(t);
             return Json(new { ok = true, id = t.Id.ToString(), redirect = Url.Action("Details", new { id = t.Id }) });
         }
