@@ -48,15 +48,14 @@
     <button type="submit">Guardar</button>
 }
 
-@section scripts{
-    @Html.Partial("~/Views/Shared/_ValidationScriptsPartial.cshtml")
+@section scripts {
+    @* Renderiza los scripts de validación unobtrusive *@
+    @Scripts.Render("~/bundles/jqueryval")
+
     <script>
+        // Inicializa la lógica de tu JS
         Tasks.initCreate();
     </script>
-    <script>
-        console.log('init create...');
-        if (window.Tasks && Tasks.initCreate) Tasks.initCreate();
-        else alert('No cargó bundles/app (revisa BundleConfig y rutas)');
-    </script>
-
 }
+
+
