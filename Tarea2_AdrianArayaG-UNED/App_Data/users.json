@@ -5,8 +5,31 @@
     "PasswordHash": "uPL9rayu8Lnozm/W7IPMotk2OsimeGoITMnSRUkQN1k=",
     "Salt": "/wdedhdxfCzmbqJ5woe+Yg==",
     "Roles": [
+      "Estudiante",
+      "Estudiante",
       "Estudiante"
     ],
     "CreatedAt": "2025-10-05T14:32:45.6230665Z"
+  },
+  {
+    "UserName": "usuario2",
+    "DisplayName": "Usuario2",
+    "PasswordHash": "3SHmyyM46Ox4yqoWXQWx8mboRSIoNq/C8532FzQ6Skw=",
+    "Salt": "BU4QfuJ/HqbhL8dammGgcQ==",
+    "Roles": [
+      "Estudiante",
+      "Estudiante"
+    ],
+    "CreatedAt": "2025-10-07T02:13:36.3255252Z"
+  },
+  {
+    "UserName": "usuario3",
+    "DisplayName": "user3",
+    "PasswordHash": "PGO4YNbTTZ2vdx+tRtMXVKHIYUYZoo9iYuEtYu9nWvg=",
+    "Salt": "c7Ie8YmgNMc5AhgZ/Az9YA==",
+    "Roles": [
+      "Estudiante"
+    ],
+    "CreatedAt": "2025-10-07T02:47:22.733034Z"
   }
 ]
